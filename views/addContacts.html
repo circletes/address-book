@@ -1,0 +1,137 @@
+<link rel = "stylesheet" href="/cdn/css/bootstrap/css/bootstrap.css">
+<!DOCTYPE html>
+<html lang="en">
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+
+  socket.on('contactExists', function(data){
+    window.alert(data);
+  });
+  socket.on('addSuccess', function(){
+    //Take the user to the contacts page
+    window.open("/viewContacts","_self")
+  });
+
+  function addContact(){
+
+    //Get the values from the form
+    var formVals = document.getElementById("frm1");
+    //Validate info
+    var contact = {
+      name: formVals.elements[0].value,
+      surname: formVals.elements[1].value,
+      cellNum: formVals.elements[2].value,
+      homeNum: formVals.elements[3].value,
+      email: formVals.elements[4].value
+    }
+    var blanks=0;
+    for (var property in contact) {
+      if (contact.hasOwnProperty(property)) {
+        if (contact[property]==""){
+          blanks++;
+        }
+      }
+    }
+    //Check if all fields are blank and if at least a name or surname was entered
+    if (blanks<5){
+      socket.emit('add', contact);
+    }
+    else{
+      window.alert('Please ensure you at least enter a persons Name or Surname');
+    }
+  }
+</script>
+<head>
+    <title>Add</title>
+    <meta charset="utf-8" />
+    <style>
+		.flex-container {
+		    display: -webkit-flex;
+		    display: flex;
+		    -webkit-flex-flow: row wrap;
+		    flex-flow: row wrap;
+		    text-align: center;
+		}
+
+		.flex-container > * {
+		    padding: 15px;
+		    -webkit-flex: 1 100%;
+		    flex: 1 100%;
+		}
+
+		.article {
+		    text-align: left;
+		}
+
+		header {background: #428bca;color:white;}
+		footer {background: #aaa;color:white;}
+		.nav {background:#eee;}
+
+		.nav ul {
+        margin-left: 3em;
+		    list-style-type: disc;;
+		    padding: 0;
+		}
+		.nav ul a {
+		    text-decoration: none;
+		}
+
+		.aside {
+			text-align: left;
+			border-left: thin solid black;
+		}
+
+		@media all and (min-width: 768px) {
+		    .nav {text-align:left;-webkit-flex: 1 auto;flex:1 auto;-webkit-order:1;order:1;}
+		    .article {-webkit-flex:5 0px;flex:5 0px;-webkit-order:2;order:2;}
+				.aside {-webkit-flex:2 0px;flex:2 0px;-webkit-order:3;order:3;}
+		    footer {-webkit-order:4;order:4;}
+		}
+
+    </style>
+</head>
+
+<body>
+
+    <div class="flex-container">
+
+        <header>
+            <h1>Add Contacts</h1>
+        </header>
+
+        <nav class="nav">
+            <h2>Options:</h2>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li>Add Contacts</a></li>
+                <li><a href="viewContacts">Manage Contacts</a></li>
+            </ul>
+        </nav>
+
+        <article class="article">
+            <p>Please fill in the information below to add a contact to your address book: </p>
+            <form id="frm1" name="submitContact">
+            </p>
+            <b>First Name:&nbsp&nbsp&nbsp&nbsp&nbsp<b>
+              <input type="text" name="firstName"><br>
+            <p></p>
+            <b>Surname:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<b>
+              <input type="text" name="surname"><br>
+            <p></p>
+            <b>Cell Number:&nbsp&nbsp&nbsp<b>
+              <input type="text" name="cellNum"><br>
+            <p></p>
+            <b>Home Number:<b>
+              <input type="text" name="homeNum"><br>
+            <p></p>
+            <b>Email:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<b>
+              <input type="text" name="email"><br>
+            <p></p>
+            <input type="button" onclick="addContact()" value="Add Contact">
+          </form>
+        </article>
+    </div>
+</body>
+
+</html>

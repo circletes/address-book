@@ -1,0 +1,78 @@
+<link rel = "stylesheet" href="/cdn/css/bootstrap/css/bootstrap.css">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Home</title>
+    <meta charset="utf-8" />
+    <style>
+		.flex-container {
+		    display: -webkit-flex;
+		    display: flex;
+		    -webkit-flex-flow: row wrap;
+		    flex-flow: row wrap;
+		    text-align: center;
+		}
+
+		.flex-container > * {
+		    padding: 15px;
+		    -webkit-flex: 1 100%;
+		    flex: 1 100%;
+		}
+
+		.article {
+		    text-align: left;
+		}
+
+		header {background: #428bca;color:white;}
+		footer {background: #aaa;color:white;}
+		.nav {background:#eee;}
+
+		.nav ul {
+        margin-left: 3em;
+		    list-style-type: disc;;
+		    padding: 0;
+		}
+		.nav ul a {
+		    text-decoration: none;
+		}
+
+		.aside {
+			text-align: left;
+			border-left: thin solid black;
+		}
+
+		@media all and (min-width: 768px) {
+		    .nav {text-align:left;-webkit-flex: 1 auto;flex:1 auto;-webkit-order:1;order:1;}
+		    .article {-webkit-flex:5 0px;flex:5 0px;-webkit-order:2;order:2;}
+				.aside {-webkit-flex:2 0px;flex:2 0px;-webkit-order:3;order:3;}
+		    footer {-webkit-order:4;order:4;}
+		}
+    </style>
+</head>
+
+<body>
+
+    <div class="flex-container">
+
+        <header>
+            <h1>Address Book Home</h1>
+        </header>
+
+        <nav class="nav">
+            <h2>Options:</h2>
+            <ul>
+                <li>Home</a></li>
+                <li><a href="addContacts">Add Contacts</a></li>
+                <li><a href="viewContacts">Manage Contacts</a></li>
+            </ul>
+        </nav>
+
+        <article class="article">
+            <h1>Welcome to your address book </h1>
+            <p>To get started select an option from the options menu. </p>
+        </article>
+    </div>
+</body>
+
+</html>

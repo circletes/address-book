@@ -1,0 +1,144 @@
+<link rel = "stylesheet" href="/cdn/css/bootstrap/css/bootstrap.css">
+<!DOCTYPE html>
+<html lang="en">
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  function fetchContact(){
+    //Get the values from the cookie
+     var pos = getCookie('position');
+
+     socket.emit('getContact',pos);
+     socket.on('recvContact', function(data){
+       document.getElementById('fname').value = data.name;
+       document.getElementById('sname').value = data.surname;
+       document.getElementById('cnum').value = data.cellNum;
+       document.getElementById('hnum').value = data.homeNum;
+       document.getElementById('mail').value = data.email;
+     });
+  }
+
+  function updateContact(){
+    var contact = {
+      name: document.getElementById('fname').value,
+      surname: document.getElementById('sname').value,
+      cellNum: document.getElementById('cnum').value,
+      homeNum: document.getElementById('hnum').value,
+      email: document.getElementById('mail').value,
+      pos: getCookie('position')
+    }
+    socket.emit('updateContact',contact);
+    socket.on('updateSuccess', function(data){
+        window.alert('Contact Updated Successfully.')
+        window.open("/viewContacts","_self")
+    });
+  }
+
+  function getCookie(c_name) {
+      if (document.cookie.length > 0) {
+          c_start = document.cookie.indexOf(c_name + "=");
+          if (c_start != -1) {
+              c_start = c_start + c_name.length + 1;
+              c_end = document.cookie.indexOf(";", c_start);
+              if (c_end == -1) {
+                  c_end = document.cookie.length;
+              }
+              return unescape(document.cookie.substring(c_start, c_end));
+          }
+      }
+      return "";
+  }
+</script>
+<head>
+    <title>Edit</title>
+    <meta charset="utf-8" />
+    <style>
+		.flex-container {
+		    display: -webkit-flex;
+		    display: flex;
+		    -webkit-flex-flow: row wrap;
+		    flex-flow: row wrap;
+		    text-align: center;
+		}
+
+		.flex-container > * {
+		    padding: 15px;
+		    -webkit-flex: 1 100%;
+		    flex: 1 100%;
+		}
+
+		.article {
+		    text-align: left;
+		}
+
+		header {background: #428bca;color:white;}
+		footer {background: #aaa;color:white;}
+		.nav {background:#eee;}
+
+		.nav ul {
+        margin-left: 3em;
+		    list-style-type: disc;;
+		    padding: 0;
+		}
+		.nav ul a {
+		    text-decoration: none;
+		}
+
+		.aside {
+			text-align: left;
+			border-left: thin solid black;
+		}
+
+		@media all and (min-width: 768px) {
+		    .nav {text-align:left;-webkit-flex: 1 auto;flex:1 auto;-webkit-order:1;order:1;}
+		    .article {-webkit-flex:5 0px;flex:5 0px;-webkit-order:2;order:2;}
+				.aside {-webkit-flex:2 0px;flex:2 0px;-webkit-order:3;order:3;}
+		    footer {-webkit-order:4;order:4;}
+		}
+
+    </style>
+</head>
+
+<body onload="fetchContact();">
+
+    <div class="flex-container">
+
+        <header>
+            <h1>Edit Contacts</h1>
+        </header>
+
+        <nav class="nav">
+            <h2>Options:</h2>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="addContacts">Add Contacts</a></li>
+                <li><a href="viewContacts">Manage Contacts</a></li>
+            </ul>
+        </nav>
+
+        <article class="article">
+            <p>Edit the information as required: </p>
+            <form id="frm1" name="submitContact">
+            </p>
+            <b>First Name:&nbsp&nbsp&nbsp&nbsp&nbsp<b>
+              <input type="text" name="firstName" id="fname"><br>
+            <p></p>
+            <b>Surname:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<b>
+              <input type="text" name="surname" id="sname"><br>
+            <p></p>
+            <b>Cell Number:&nbsp&nbsp&nbsp<b>
+              <input type="text" name="cellNum" id="cnum"><br>
+            <p></p>
+            <b>Home Number:<b>
+              <input type="text" name="homeNum" id="hnum"><br>
+            <p></p>
+            <b>Email:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<b>
+              <input type="text" name="email" id="mail"><br>
+            <p></p>
+            <input type="button" onclick="updateContact()" value="Update Contact">
+          </form>
+        </article>
+    </div>
+</body>
+
+</html>

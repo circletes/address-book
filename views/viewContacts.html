@@ -1,0 +1,157 @@
+<link rel = "stylesheet" href="/cdn/css/bootstrap/css/bootstrap.css">
+<!DOCTYPE html>
+<html lang="en">
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+function setData(pos){
+  createCookie("position",pos,0.25);
+  window.open("/editContacts","_self")
+}
+
+//will create a cookie to store data acccross the pages
+function createCookie(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    }
+    else {
+        expires = "";
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+
+  var socket = io();
+
+function fetchContacts(){
+  socket.emit('fetchContactList');
+  socket.on('getContactList',function(data){
+    var allDetails = " "
+    //Process Data
+  for (var i = 0; i < data.length; i++) {
+      allDetails=allDetails+"<strong>First Name:</strong> "+data[i].name+"<br />"+
+      "<strong>Surame:</strong> "+data[i].surname+"<br />"+
+      "<strong>Cell Number:</strong> "+data[i].cellNum+"<br />"+
+      "<strong>Home Number:</strong> "+data[i].homeNum+"<br />"+
+      "<strong>Email:</strong> "+data[i].email+"<br />"+
+      "<input id=\"edit\" type=\"button\" value=\"Edit Contact\" onclick=\"setData("+i+");\" />"+
+      "<input id=\"delete\" type=\"button\" value=\"Delete Contact\" onclick=\"deleteContact("+i+");\" />"+"<br />"+"<br />";
+    }
+    //Add if to check if there are contacts.
+    if(data.length>0){
+      allDetails = allDetails+"<br />"+"<br />"+"<input id=\"deleteAll\" type=\"button\" value=\"Delete All Contacts\" onclick=\"deleteAllContacts();\" />"+"<br />"+"<br />"
+    }
+    contacts.innerHTML=allDetails;
+  });
+
+}
+
+  function deleteContact(pos){
+    if (confirm('Are you sure you want to delete this contact?')) {
+      socket.emit('deleteContact', pos);
+      socket.on('deleteSuccess',function(data){
+      window.alert('Contact Deleted Successfully');
+      window.open("/viewContacts","_self")
+    });
+    }
+  }
+
+  function deleteAllContacts(){
+    if (confirm('Are you sure you want to delete all saved contacts?')) {
+      socket.emit('deleteAllContacts');
+      socket.on('deleteAllSuccess',function(data){
+        window.alert('Contacts Deleted Successfully');
+      window.open("/viewContacts","_self")
+        });
+    }
+  }
+
+  function sortBy(prop){
+    socket.emit('sort', prop);
+    socket.on('sorted', function(){
+      window.open("/viewContacts","_self")
+    });
+  }
+</script>
+
+<head>
+    <title>View</title>
+    <meta charset="utf-8" />
+    <style>
+		.flex-container {
+		    display: -webkit-flex;
+		    display: flex;
+		    -webkit-flex-flow: row wrap;
+		    flex-flow: row wrap;
+		    text-align: center;
+		}
+
+		.flex-container > * {
+		    padding: 15px;
+		    -webkit-flex: 1 100%;
+		    flex: 1 100%;
+		}
+
+		.article {
+		    text-align: left;
+		}
+
+		header {background: #428bca;color:white;}
+		footer {background: #aaa;color:white;}
+		.nav {background:#eee;}
+
+		.nav ul {
+        margin-left: 3em;
+		    list-style-type: disc;;
+		    padding: 0;
+		}
+		.nav ul a {
+		    text-decoration: none;
+		}
+
+		.aside {
+			text-align: left;
+			border-left: thin solid black;
+		}
+
+		@media all and (min-width: 768px) {
+		    .nav {text-align:left;-webkit-flex: 1 auto;flex:1 auto;-webkit-order:1;order:1;}
+		    .article {-webkit-flex:5 0px;flex:5 0px;-webkit-order:2;order:2;}
+				.aside {-webkit-flex:2 0px;flex:2 0px;-webkit-order:3;order:3;}
+		    footer {-webkit-order:4;order:4;}
+		}
+
+    </style>
+</head>
+
+<body onload="fetchContacts();">
+
+    <div class="flex-container">
+
+        <header>
+            <h1>Manage Contacts</h1>
+        </header>
+
+        <nav class="nav">
+            <h2>Options:</h2>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="addContacts">Add Contacts</a></li>
+                <li>Manage Contacts</a></li>
+            </ul>
+        </nav>
+
+        <article class="article">
+            <p>A list of your contacts can be found below: </p>
+            <p>Sort contacts by: <a href="javascript:sortBy('name');">First Name</a>/<a href="javascript:sortBy('surname');">Surname</a></p>
+            <p></p>
+            <p><span id="contacts"></span></p>
+        </article>
+    </div>
+</body>
+
+</html>
