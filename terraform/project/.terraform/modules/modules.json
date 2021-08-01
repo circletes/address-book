@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"mysql","Source":"../modules/mysql","Dir":"../modules/mysql"},{"Key":"","Source":"","Dir":"."},{"Key":"cluster","Source":"../modules/cluster","Dir":"../modules/cluster"},{"Key":"firewall_rule","Source":"../modules/firewall_rule","Dir":"../modules/firewall_rule"}]}
