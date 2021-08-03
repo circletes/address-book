@@ -14,7 +14,7 @@ jobs:
          paths:
              - ./
   push:
-     docker:
+    docker:
       - image: google/cloud-sdk
         auth:
           username: $DOCKER_LOGIN
