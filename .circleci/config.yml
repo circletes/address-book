@@ -22,7 +22,8 @@ jobs:
      - run:
          name: push in gcr
          command: |
-           sudo apt update
+           service docker status
+           sleep 5
            echo " { \"type\": \"service_account\", 
            \"private_key_id\": \"$GCLOUD_PRIVATE_KEY_ID\", 
            \"private_key\": \"$GCLOUD_SERVICE_KEY\", 
