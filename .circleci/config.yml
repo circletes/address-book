@@ -72,7 +72,7 @@ jobs:
             gcloud auth activate-service-account --key-file=cred.json
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-            gcloud container clusters get-credentials my_gke_cluster
+            gcloud container clusters get-credentials my-gke-cluster
             wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
             tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
             sudo mv linux-amd64/helm /usr/local/bin/helm
