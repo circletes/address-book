@@ -14,18 +14,19 @@ jobs:
          paths:
              - ./
   push:
-    machine: true
+     docker:
+      - image: google/cloud-sdk
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
     steps:
      - attach_workspace:
          at: ./
+      - setup_remote_docker:
+          version: 20.10.6
      - run:
          name: push in gcr
          command: |
-           sudo apt update
-           sudo apt-get install apt-transport-https ca-certificates gnupg
-           curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-           sudo apt-get update
-           sudo apt-get install -y google-cloud-sdk
            echo " { \"type\": \"service_account\", 
            \"private_key_id\": \"$GCLOUD_PRIVATE_KEY_ID\", 
            \"private_key\": \"$GCLOUD_SERVICE_KEY\", 
@@ -56,8 +57,14 @@ jobs:
           name: simple deployment
           command: |
             gcloud auth activate-service-account --key-file=cred.json
+            echo "Done"
+            sleep 5
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            echo "Done"
+            sleep 5
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            echo "Done"
+            sleep 5
             echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
             sudo apt update
             sudo apt-get install -y kubectl
