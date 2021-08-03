@@ -45,19 +45,19 @@ jobs:
            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
            docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
   deploy:
-    docker:
-      - image: google/cloud-sdk
-        auth:
-          username: $DOCKER_LOGIN
-          password: $DOCKER_PASSWORD
+    machine: true
     steps:
       - attach_workspace:
          at: ./
-      - setup_remote_docker:
-         version: 20.10.6
       - run:
           name: simple deployment
           command: |
+            sudo apt update
+            sudo apt-get install apt-transport-https ca-certificates gnupg
+            curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+            sudo apt-get update
+            sudo apt-get install -y google-cloud-sdk
+            sudo apt-get install -y kubectl
             echo " { \"type\": \"service_account\", 
             \"private_key_id\": \"$GCLOUD_PRIVATE_KEY_ID\", 
             \"private_key\": \"$GCLOUD_SERVICE_KEY\", 
@@ -67,10 +67,6 @@ jobs:
             \"token_uri\": \"https://oauth2.googleapis.com/token\", 
             \"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\", 
             \"client_x509_cert_url\": \"$GCP_AUTH_X509\" } " >cred.json
-            gcloud auth activate-service-account --key-file=cred.json
-            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-            sudo apt-get install -y kubectl
             gcloud container clusters get-credentials my_gke_cluster
             wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
             tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
