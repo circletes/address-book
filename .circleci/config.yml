@@ -22,6 +22,7 @@ jobs:
      - run:
          name: push in gcr
          command: |
+           sudo apt update
            echo " { \"type\": \"service_account\", 
            \"private_key_id\": \"$GCLOUD_PRIVATE_KEY_ID\", 
            \"private_key\": \"$GCLOUD_SERVICE_KEY\", 
