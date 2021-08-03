@@ -57,7 +57,9 @@ jobs:
             curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
             sudo apt-get update
             sudo apt-get install -y google-cloud-sdk
-            sudo apt-get install -y kubectl
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
             echo " { \"type\": \"service_account\", 
             \"private_key_id\": \"$GCLOUD_PRIVATE_KEY_ID\", 
             \"private_key\": \"$GCLOUD_SERVICE_KEY\", 
@@ -74,6 +76,7 @@ jobs:
             pwd
             sleep 10
             ls
+            sleep 10
 workflows:
   version: 2.1
   build_push_and_deploy:
