@@ -55,10 +55,11 @@ jobs:
       - run:
           name: simple deployment
           command: |
-            sudo apt update
             gcloud auth activate-service-account --key-file=cred.json
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+            sudo apt update
             sudo apt-get install -y kubectl
             gcloud container clusters get-credentials my_gke_cluster
             wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
