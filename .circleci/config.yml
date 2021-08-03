@@ -76,10 +76,9 @@ jobs:
             wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
             tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
             sudo mv linux-amd64/helm /usr/local/bin/helm
-            pwd
-            sleep 10
-            ls
-            sleep 10
+            cd ${HOME}/project/Helm-Chart
+            kubectl apply -f tiller.yaml
+            helm install . --name webbbb -f ./values.yaml
 workflows:
   version: 2.1
   build_push_and_deploy:
