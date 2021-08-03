@@ -5,7 +5,7 @@ variable "name" {
 
 variable "location" {
   type        = string
-  default     = "europe-west3"
+  default     = "europe-west3-c"
 }
 
 variable "machine_type" {

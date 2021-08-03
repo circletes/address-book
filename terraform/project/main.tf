@@ -15,3 +15,7 @@ module "mysql" {
 module "cluster" {
   source     = "../modules/cluster"
 }
+
+module "gcr" {
+  source     = "../modules/gcr"
+}
