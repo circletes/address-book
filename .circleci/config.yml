@@ -41,13 +41,35 @@ jobs:
            cd ${HOME}/project
            docker load -i ${HOME}/project/webbb_latest.tar.gz
            docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
-           docker images
-           sleep 15
            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
            docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
+     - persist_to_workspace:
+        root: ./
+        paths:
+            - ./
+  deploy:
+    machine: true
+    steps:
+      - attach_workspace:
+         at: ./
+     - run:
+         name: simple deployment
+         command: |
+           sudo apt update
+           gcloud auth activate-service-account --key-file=cred.json
+           gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+           sudo apt install -y kubectl
+           gcloud container clusters get-credentials my_gke_cluster
+           wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
+           tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
+           sudo mv linux-amd64/helm /usr/local/bin/helm
+           pwd
+           sleep 10
+           ls
 workflows:
   version: 2.1
-  build_and_push:
+  build_push_and_deploy:
     jobs:
       - build:
          filters:
@@ -58,3 +80,9 @@ workflows:
            - gcp
          requires:
            - build
+      - deploy:
+         context:
+           - gcp
+         requires:
+           - build
+           - push
