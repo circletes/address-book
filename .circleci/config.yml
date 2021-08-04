@@ -7,7 +7,8 @@ jobs:
      - run: 
          name: build
          command: |
-           docker build -t webbb .
+           TAG=${CIRCLE_SHA1::6}
+           docker build -t webbb: .
            docker save webbb:latest | gzip > webbb_latest.tar.gz
      - persist_to_workspace:
          root: ./
@@ -19,15 +20,15 @@ jobs:
     steps:
      - attach_workspace:
          at: ./
-     - setup_remote_docker
+     - setup_remote_docker:
+          version: 20.10.6
      - run:
          name: push in gcr
          command: |
-           TAG=${CIRCLE_SHA1::6}
-           echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://gcr.io
+           echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
            docker load -i ${HOME}/project/webbb_latest.tar.gz
-           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${TAG}
-           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${TAG}
+           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
+           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
   deploy:
     docker:
       - image: google/cloud-sdk
