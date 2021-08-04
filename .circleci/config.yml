@@ -27,19 +27,8 @@ jobs:
      - run:
          name: push in gcr
          command: |
-           echo " { \"type\": \"service_account\", 
-           \"private_key_id\": \"$GCLOUD_PRIVATE_KEY_ID\", 
-           \"private_key\": \"$GCLOUD_SERVICE_KEY\", 
-           \"client_email\": \"$GOOGLE_EMAIL\",
-           \"client_id\": \"$CLIENT_ID\",
-           \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",
-           \"token_uri\": \"https://oauth2.googleapis.com/token\", 
-           \"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\", 
-           \"client_x509_cert_url\": \"$GCP_AUTH_X509\" } " >cred.json
-           gcloud auth activate-service-account --key-file=cred.json
-           gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-           cd ${HOME}/project
+           echo $GCLOUD_ACC | base64 --d > gcloud-service-key.json            
+           gcloud auth activate-service-account --key-file gcloud-service-key.json
            docker load -i ${HOME}/project/webbb_latest.tar.gz
            docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
