@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 jobs:
   build:
     machine: true
@@ -16,58 +16,38 @@ jobs:
   push:
     docker:
       - image: google/cloud-sdk
-        auth:
-          username: $DOCKER_LOGIN
-          password: $DOCKER_PASSWORD
     steps:
      - attach_workspace:
          at: ./
-     - setup_remote_docker:
-          version: 20.10.6
+     - setup_remote_docker
      - run:
          name: push in gcr
          command: |
-           echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
+           TAG=${CIRCLE_SHA1::6}
+           echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://gcr.io
            docker load -i ${HOME}/project/webbb_latest.tar.gz
-           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
-           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
+           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${TAG}
+           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${TAG}
   deploy:
-    machine: true
+    docker:
+      - image: google/cloud-sdk
+        environment:
+          DEPLOYMENT_NAME: webbb-app
+          DEPLOYMENT_CONTAINER_NAME: webbb-app
     steps:
-      - attach_workspace:
-         at: ./
-      - run:
-          name: simple deployment
-          command: |
-            sudo apt update
-            sudo apt-get install apt-transport-https ca-certificates gnupg
-            curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-            sudo apt-get update
-            sudo apt-get install -y google-cloud-sdk
-            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-            chmod +x ./kubectl
-            sudo mv ./kubectl /usr/local/bin/kubectl
-            echo " { \"type\": \"service_account\", 
-            \"private_key_id\": \"$GCLOUD_PRIVATE_KEY_ID\", 
-            \"private_key\": \"$GCLOUD_SERVICE_KEY\", 
-            \"client_email\": \"$GOOGLE_EMAIL\",
-            \"client_id\": \"$CLIENT_ID\",
-            \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",
-            \"token_uri\": \"https://oauth2.googleapis.com/token\", 
-            \"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\", 
-            \"client_x509_cert_url\": \"$GCP_AUTH_X509\" } " >cred.json
-            gcloud auth activate-service-account --key-file=cred.json
-            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-            gcloud container clusters get-credentials my-gke-cluster
-            wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
-            tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
-            sudo mv linux-amd64/helm /usr/local/bin/helm
-            cd ${HOME}/project/Helm-Chart
-            kubectl apply -f tiller.yaml
-            helm install . --name webbbb -f ./values.yaml
+     - setup_remote_docker
+     - run:
+         name: simple deployment
+         command: |
+           TAG=${CIRCLE_SHA1::6}
+            echo "$GCLOUD_ACC" | base64 --d > gcloud-service-key.json
+            gcloud auth activate-service-account --key-file gcloud-service-key.json
+            gcloud --quiet config set project $GOOGLE_PROJECT_ID
+            gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
+            gcloud container clusters get-credentials my-gke-cluster --region europe-west3
+            kubectl set image deployment/my-gke-cluster $DEPLOYMENT_CONTAINER_NAME=eu.gcr.io/${GOOGLE_PROJECT_ID}/$DEPLOYMENT_NAME:$TAG
 workflows:
-  version: 2.1
+  version: 2
   build_push_and_deploy:
     jobs:
       - build:

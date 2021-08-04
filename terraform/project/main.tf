@@ -4,10 +4,6 @@ provider "google" {
   zone        = var.zone
 }
 
-module "firewall_rule" {
-  source     = "../modules/firewall_rule"
-}
-
 module "mysql" {
   source     = "../modules/mysql"
 }
