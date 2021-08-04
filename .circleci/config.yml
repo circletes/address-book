@@ -27,11 +27,9 @@ jobs:
      - run:
          name: push in gcr
          command: |
-           echo $GCLOUD_ACC | base64 --d > gcloud-service-key.json            
-           gcloud auth activate-service-account --key-file gcloud-service-key.json
+           echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
            docker load -i ${HOME}/project/webbb_latest.tar.gz
            docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
-           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
            docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
   deploy:
     machine: true
