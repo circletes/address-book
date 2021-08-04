@@ -7,8 +7,7 @@ jobs:
      - run: 
          name: build
          command: |
-           TAG=${CIRCLE_SHA1::6}
-           docker build -t webbb: .
+           docker build -t webbb .
            docker save webbb:latest | gzip > webbb_latest.tar.gz
      - persist_to_workspace:
          root: ./
