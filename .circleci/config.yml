@@ -32,8 +32,8 @@ jobs:
     docker:
       - image: google/cloud-sdk
         environment:
-          DEPLOYMENT_NAME: circle
-          DEPLOYMENT_CONTAINER_NAME: webbb
+          DEPLOYMENT_NAME: address-book
+          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
     steps:
      - setup_remote_docker
      - run:
