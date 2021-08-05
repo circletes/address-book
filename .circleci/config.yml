@@ -33,7 +33,7 @@ jobs:
       - image: google/cloud-sdk
         environment:
           DEPLOYMENT_NAME: address-book
-          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
+          DEPLOYMENT_CONTAINER_NAME: webbb
     steps:
      - setup_remote_docker
      - run:
