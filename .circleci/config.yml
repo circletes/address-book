@@ -33,7 +33,7 @@ jobs:
       - image: google/cloud-sdk
         environment:
           DEPLOYMENT_NAME: address-book
-          DEPLOYMENT_CONTAINER_NAME: webbb
+          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
     steps:
      - setup_remote_docker
      - run:
@@ -44,7 +44,7 @@ jobs:
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
             gcloud container clusters get-credentials my-gke-cluster --region europe-west3
-            kubectl set image deployment/address-book $DEPLOYMENT_CONTAINER_NAME=eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb/$DEPLOYMENT_NAME:${CIRCLE_SHA1::7}
+            kubectl set image deployment/address-book webbb-sha256-1=eu.gcr.io//${GOOGLE_PROJECT_ID}/webbb:${CIRLCE_SHA1::7}
 workflows:
   version: 2
   build_push_and_deploy:

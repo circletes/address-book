@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: "webbb-sha256-1"
-        image: "eu.gcr.io/citric-earth-319117/webbb@sha256:75210fc3c3cee25b01a82512db2a25c8c62646cb9d7ceb876a57d013de598643"
+        image: "eu.gcr.io/citric-earth-319117/webbb@sha256:f2b7f890aa66fb97729a5ef52f0b1b1ddc4f624c7b5960578e92dbe3f299495a"
 ---
 apiVersion: "autoscaling/v2beta1"
 kind: "HorizontalPodAutoscaler"
