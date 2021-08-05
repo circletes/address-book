@@ -26,8 +26,8 @@ jobs:
          command: |
            echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
            docker load -i ${HOME}/project/webbb_latest.tar.gz
-           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
-           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1}
+           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
+           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
   deploy:
     docker:
       - image: google/cloud-sdk
@@ -48,7 +48,7 @@ jobs:
             gcloud container clusters get-credentials my-gke-cluster --region europe-west3
             echo "DONE"
             sleep 7
-            kubectl set image deployment/webbb-app-deployment $DEPLOYMENT_CONTAINER_NAME=eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb/$DEPLOYMENT_NAME:${CIRCLE_SHA1}
+            kubectl set image deployment/webbb-app-deployment $DEPLOYMENT_CONTAINER_NAME=eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb/$DEPLOYMENT_NAME:${CIRCLE_SHA1::7}
 workflows:
   version: 2
   build_push_and_deploy:
