@@ -43,12 +43,8 @@ jobs:
             gcloud auth activate-service-account --key-file gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-            echo "DONE"
-            sleep 5
             gcloud container clusters get-credentials my-gke-cluster --region europe-west3
-            echo "DONE"
-            sleep 7
-            kubectl set image deployment/webbb-app-deployment $DEPLOYMENT_CONTAINER_NAME=eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb/$DEPLOYMENT_NAME:${CIRCLE_SHA1::7}
+            kubectl set image deployment/address-book $DEPLOYMENT_CONTAINER_NAME=eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb/$DEPLOYMENT_NAME:${CIRCLE_SHA1::7}
 workflows:
   version: 2
   build_push_and_deploy:
