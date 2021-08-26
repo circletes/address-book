@@ -1,39 +1,41 @@
 version: 2
 jobs:
-  build:
-    machine: true
-    steps:
-     - checkout
-     - run: 
-         name: build
-         command: |
-           docker build -t webbb .
-           docker save webbb:latest | gzip > webbb_latest.tar.gz
-     - persist_to_workspace:
-         root: ./
-         paths:
-             - ./
+#  build:
+#    machine: true
+#    steps:
+#     - checkout
+#     - run: 
+#         name: build
+#         command: |
+#          
+#     - persist_to_workspace:
+#         root: ./
+#         paths:
+#             - ./
   push:
     docker:
       - image: google/cloud-sdk
     steps:
-     - attach_workspace:
-         at: ./
+#    - attach_workspace:
+#         at: ./
      - setup_remote_docker:
           version: 20.10.6
      - run:
          name: push in gcr
          command: |
            echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
-           docker load -i ${HOME}/project/webbb_latest.tar.gz
+           docker build -t webbb .
            docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
+           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
+#           docker load -i ${HOME}/project/webbb_latest.tar.gz
+#           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
            docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
   deploy:
     docker:
       - image: google/cloud-sdk
-        environment:
-          DEPLOYMENT_NAME: address-book
-          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
+#        environment:
+#          DEPLOYMENT_NAME: address-book
+#          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
     steps:
      - setup_remote_docker
      - run:
@@ -43,24 +45,26 @@ jobs:
             gcloud auth activate-service-account --key-file gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-            gcloud container clusters get-credentials my-gke-cluster --region europe-west3
-            kubectl set image deployment/address-book webbb-sha256-1=eu.gcr.io//${GOOGLE_PROJECT_ID}/webbb:${CIRLCE_SHA1::7}
+            gcloud container clusters get-credentials my-first-cluster-2ac9c511-default --region europe-west3
+            curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+            helm upgrade --install ${GCP_PROJECT_NAME} ${GCP_PROJECT_NAME}/webbb --set=container.tag=${CIRCLE_SHA1::7}
+#            kubectl set image deployment/address-book webbb-sha256-1=eu.gcr.io//${GOOGLE_PROJECT_ID}/webbb:${CIRLCE_SHA1::7}
 workflows:
   version: 2
   build_push_and_deploy:
     jobs:
-      - build:
-         filters:
-           branches:
-             only: master
+#      - build:
+#         filters:
+#           branches:
+#             only: master
       - push:
          context:
            - gcp
-         requires:
-           - build
+#         requires:
+#           - build
       - deploy:
          context:
            - gcp
          requires:
-           - build
+#           - build
            - push
