@@ -49,7 +49,7 @@ jobs:
             curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
             helm repo add ${GCP_PROJECT_NAME} "https://${GH_TOKEN}@raw.githubusercontent.com/circletes/helm/master"
             helm repo update
-            helm upgrade --install my-first-cluster-2ac9c511-default ${GCP_PROJECT_NAME}/my-first-cluster-2ac9c511-default --set=container.tag=${CIRCLE_SHA1::7}
+            helm upgrade --install ${GCP_PROJECT_NAME} ${GCP_PROJECT_NAME}/my-first --set=container.tag=${CIRCLE_SHA1::7}
 workflows:
   version: 2
   build_push_and_deploy:
@@ -66,6 +66,5 @@ workflows:
       - deploy:
          context:
            - gcp
-         requires:
-#           - build
+         requires:#           - build
            - push

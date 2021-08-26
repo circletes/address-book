@@ -87,5 +87,5 @@ variable "kubernetes_secret_name" {
 variable "chart_path" {  
   description = "Path for helm chart."
   type        = string
-  default     = "./helm-chart"
+  default     = "https://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@raw.githubusercontent.com/circletes/helm/master/"
 }

@@ -14,7 +14,8 @@ provider "helm"{
   }
 }
 
-resource "helm_release" "web-app"{
-  name       =  var.helm_name
-  chart      =  var.chart_path
+resource "helm_release" "my-first"{
+  name       =  "my-first"
+  repository =  var.chart_path
+  chart      =  "my-first"
 }
