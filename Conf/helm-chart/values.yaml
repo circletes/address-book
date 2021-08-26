@@ -1,7 +1,0 @@
-replicaCount: 3
-
-container:
-  image: eu.gcr.io/citric-earth-319117/webbb
-  tag: init
-environment: dev
-

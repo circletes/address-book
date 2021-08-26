@@ -1,5 +1,0 @@
-apiVersion: v2
-name: web-Chart
-description: Base web app deployment.
-type: application
-version: 2
