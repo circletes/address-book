@@ -19,8 +19,7 @@ jobs:
      - checkout
 #    - attach_workspace:
 #         at: ./
-     - setup_remote_docker:
-          version: 20.10.6
+     - setup_remote_docker
      - run:
          name: push in gcr
          command: |
@@ -39,6 +38,7 @@ jobs:
 #          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
     steps:
      - setup_remote_docker
+     - checkout
      - run:
          name: simple deployment
          command: |
