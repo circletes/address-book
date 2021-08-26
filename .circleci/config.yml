@@ -29,7 +29,6 @@ jobs:
            docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
 #           docker load -i ${HOME}/project/webbb_latest.tar.gz
 #           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
-           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
   deploy:
     docker:
       - image: google/cloud-sdk
