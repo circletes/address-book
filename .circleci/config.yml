@@ -66,5 +66,6 @@ workflows:
       - deploy:
          context:
            - gcp
-         requires:#           - build
+         requires:
+#           - build
            - push
