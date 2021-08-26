@@ -47,7 +47,7 @@ jobs:
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
             gcloud container clusters get-credentials my-first-cluster-2ac9c511-default --region europe-west3
             curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-            helm repo add "https://{GH_TOKEN}@raw.githubusercontent.com/Circletes/helm/master"
+            helm repo add ${GCP_PROJECT_NAME} "https://{GH_TOKEN}@raw.githubusercontent.com/Circletes/helm/master"
             ls
             sleep 7
             helm repo update
