@@ -50,7 +50,6 @@ jobs:
             helm repo add ${GCP_PROJECT_NAME} "https://${GH_TOKEN}@raw.githubusercontent.com/circletes/helm/master"
             helm repo update
             helm upgrade --install ${GCP_PROJECT_NAME} ${GCP_PROJECT_NAME}/web-app --set=container.tag=${CIRCLE_SHA1::7}
-#            kubectl set image deployment/address-book webbb-sha256-1=eu.gcr.io//${GOOGLE_PROJECT_ID}/webbb:${CIRLCE_SHA1::7}
 workflows:
   version: 2
   build_push_and_deploy:
