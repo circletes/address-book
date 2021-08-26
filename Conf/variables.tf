@@ -89,3 +89,6 @@ variable "chart_path" {
   type        = string
   default     = ""
 }
+
+variable "gh_token"{
+}

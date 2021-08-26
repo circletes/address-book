@@ -71,5 +71,5 @@ module "helm" {
   endpoint               = module.cluster.public_endpoint
   cluster_ca_certificate = base64decode(module.cluster.cluster_ca_certificate)
   helm_name              = "${module.cluster.cluster_name}"
-  chart_path             = var.chart_path
+  chart_path             = var.gh_token
 }

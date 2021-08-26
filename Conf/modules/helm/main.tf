@@ -14,7 +14,7 @@ provider "helm"{
   }
 }
 
-resource "helm_release" "my-first"{
+resource "helm_release" "my-first1"{
   name       =  "my-first"
   repository =  var.chart_path
   chart      =  "my-first"
