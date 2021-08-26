@@ -16,6 +16,7 @@ jobs:
     docker:
       - image: google/cloud-sdk
     steps:
+     - checkout
 #    - attach_workspace:
 #         at: ./
      - setup_remote_docker:
@@ -23,8 +24,9 @@ jobs:
      - run:
          name: push in gcr
          command: |
+           TAG=${CIRCLE_SHA1::7}
+           docker build -f Dockerfile -t eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:$TAG $@ 
            echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
-           docker build -t webbb .
            docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
            docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
 #           docker load -i ${HOME}/project/webbb_latest.tar.gz
