@@ -38,7 +38,6 @@ jobs:
 #          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
     steps:
      - setup_remote_docker
-     - checkout
      - run:
          name: simple deployment
          command: |
@@ -48,6 +47,9 @@ jobs:
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
             gcloud container clusters get-credentials my-first-cluster-2ac9c511-default --region europe-west3
             curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+            helm repo add "https://{GH_TOKEN}@raw.githubusercontent.com/Circletes/helm/master"
+            ls
+            sleep 7
             helm repo update
             helm upgrade --install ${GCP_PROJECT_NAME} ${GCP_PROJECT_NAME}/web-app --set=container.tag=${CIRCLE_SHA1::7}
 #            kubectl set image deployment/address-book webbb-sha256-1=eu.gcr.io//${GOOGLE_PROJECT_ID}/webbb:${CIRLCE_SHA1::7}
