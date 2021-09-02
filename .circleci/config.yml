@@ -1,24 +1,10 @@
 version: 2
 jobs:
-#  build:
-#    machine: true
-#    steps:
-#     - checkout
-#     - run: 
-#         name: build
-#         command: |
-#          
-#     - persist_to_workspace:
-#         root: ./
-#         paths:
-#             - ./
   push:
     docker:
       - image: google/cloud-sdk
     steps:
      - checkout
-#    - attach_workspace:
-#         at: ./
      - setup_remote_docker
      - run:
          name: push in gcr
@@ -28,14 +14,9 @@ jobs:
            docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
            echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
            docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
-#           docker load -i ${HOME}/project/webbb_latest.tar.gz
-#           docker tag webbb:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/webbb:${CIRCLE_SHA1::7}
   deploy:
     docker:
       - image: google/cloud-sdk
-#        environment:
-#          DEPLOYMENT_NAME: address-book
-#          DEPLOYMENT_CONTAINER_NAME: webbb-sha256-1
     steps:
      - setup_remote_docker
      - run:
@@ -54,18 +35,11 @@ workflows:
   version: 2
   build_push_and_deploy:
     jobs:
-#      - build:
-#         filters:
-#           branches:
-#             only: master
       - push:
          context:
            - gcp
-#         requires:
-#           - build
       - deploy:
          context:
            - gcp
          requires:
-#           - build
            - push
