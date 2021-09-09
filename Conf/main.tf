@@ -25,15 +25,15 @@ module "network" {
   source          = "./modules/network/"
   region          = var.region
   project_id      = var.project_id
-  network_name    = "${var.project_name}-vpc-${random_id.suffix.hex}"
-  global_name     = "${var.network_global_address_name}-${random_id.suffix.hex}"
-  subnetwork_name = "${var.project_name}-sub-${random_id.suffix.hex}"
+  network_name    = "${var.project_name}-vpc-${random_id.suffix.hex}-${terraform.workspace}"
+  global_name     = "${var.network_global_address_name}-${random_id.suffix.hex}-${terraform.workspace}"
+  subnetwork_name = "${var.project_name}-sub-${random_id.suffix.hex}-${terraform.workspace}"
 }
   
 module "sql" {
   source           = "./modules/sql"
   region           = var.region
-  db_instance_name = "${var.project_name}-db-${random_id.suffix.hex}"
+  db_instance_name = "${var.project_name}-db-${random_id.suffix.hex}-${terraform.workspace}"
   db_tier          = var.db_tier
   private_network  = module.network.network_id
   db_root_password = var.db_root_password
