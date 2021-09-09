@@ -67,7 +67,7 @@ variable "node_machine_type"{
 variable "image_name"{
   description = "Initial image name for docker."
   type        = string
-  default     = "webbb"
+  default     = "address-book"
 }
 
 variable "tag"{
