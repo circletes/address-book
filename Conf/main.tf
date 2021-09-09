@@ -16,7 +16,7 @@ resource "random_id" "suffix" {
 module "init" {
   source     = "./modules/init" 
   project_id = var.project_id
-  image_name = "var.image_name-${terraform.workspace}""
+  image_name = "var.image_name-${terraform.workspace}"
   tag        = var.tag 
   depends_on = [google_container_registry.registry]
 }
