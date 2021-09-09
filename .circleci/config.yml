@@ -26,7 +26,7 @@ jobs:
             gcloud auth activate-service-account --key-file gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-            gcloud container clusters get-credentials my-first-cluster-2ac9c511-dev --region europe-west3
+            gcloud container clusters get-credentials my-first-cluster-47e3f639-dev --region europe-west3
             curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
             helm repo add ${GCP_PROJECT_NAME} "https://${GITHUB_TOKEN}@raw.githubusercontent.com/circletes/helm/master"
             helm repo update
