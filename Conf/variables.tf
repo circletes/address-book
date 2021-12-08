@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "Google Cloud Platform (GCP) Project ID."
   type        = string
-  default     = "citric-earth-319117"
+  default     = "sunlit-inn-329918"
 }
 
 variable "region" {
@@ -91,4 +91,7 @@ variable "chart_path" {
 }
 
 variable "gh_token"{
+
+default = ""
+
 }

@@ -13,7 +13,7 @@ jobs:
            docker build -t address-book .
            docker tag address-book:latest eu.gcr.io/${GOOGLE_PROJECT_ID}/address-book/dev:${CIRCLE_SHA1::7}
            echo "$GCLOUD_ACC" | base64 -d | docker login -u _json_key --password-stdin https://eu.gcr.io
-           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/address-book/dev:${CIRCLE_SHA1::7}
+           docker push eu.gcr.io/${GOOGLE_PROJECT_ID}/address-book:${CIRCLE_SHA1::7}
   deploy:
     docker:
       - image: google/cloud-sdk
@@ -26,9 +26,9 @@ jobs:
             gcloud auth activate-service-account --key-file gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-            gcloud container clusters get-credentials my-first-cluster-478590a8-dev --region europe-west3
+            gcloud container clusters get-credentials my-first-cluster-c6d16f9e-default --region europe-west3
             curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-            helm repo add ${GCP_PROJECT_NAME} "https://raw.githubusercontent.com/circletes/helm/dev"
+            helm repo add ${GCP_PROJECT_NAME} "https://raw.githubusercontent.com/circletes/helm/prod"
             helm repo update
             helm upgrade --install ${GCP_PROJECT_NAME} ${GCP_PROJECT_NAME}/my-first --set=container.tag=${CIRCLE_SHA1::7}
 workflows:
